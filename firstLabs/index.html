@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div id="inputs">
+        <input type="text" class="number"/>
+        <input type="text" class="number"/>
+        <input type="text" class="number"/>
+        <input type="text" class="number"/>
+    </div>
+
+        
+    <div id="divResult">
+        <span id="result">Text</span>
+    </div>
+
+    <button id="button">SeeTheResult!</button>
+</body>
+</html>
+
+
+
+
+<script>
+
+//const numbers = document.querySelectorAll('.number');
+const result = document.querySelector('#result');
+const button = document.querySelector('#button');
+
+
+button.addEventListener('click' , () =>{
+
+    const numbers = document.querySelectorAll('.number').values; //get values from the inputs in a array/whatever
+    const tempResult = 0;
+
+    for( const i of numbers) {
+        tempResult =+ parseInt(i);
+    }
+
+     
+
+    result.innerHTML = 'Suma: ' + tempResult;
+
+})
+
+
+
+
+
+//console.dir
+//querySelector
+//querySelectorAll
+</script>
