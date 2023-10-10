@@ -1,58 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Document</title>
 </head>
+
 <body>
     <div id="inputs">
-        <input type="text" class="number"/>
-        <input type="text" class="number"/>
-        <input type="text" class="number"/>
-        <input type="text" class="number"/>
+        <input type="text" class="number" />
+        <input type="text" class="number" />
+        <input type="text" class="number" />
+        <input type="text" class="number" />
     </div>
 
-        
+
     <div id="divResult">
-        <span id="result">Text</span>
+        <span id="result">Tutaj automatycznie pojawi sie wynik z dodawania</span>
+        </br>
+        <span id="resultMin">Tutaj automatycznie pojawi sie wartosc minimalna</span>
+        </br>
+        <span id="resultMax">Tutaj automatycznie pojawi sie wartosc maksymalna</span>
     </div>
 
-    <button id="button">SeeTheResult!</button>
+    <button id="buttonAdd">AddTextBox!</button>
+    <button id="buttonRem">RemoveTextBox!</button>
+
 </body>
+
 </html>
-
-
 
 
 <script>
 
-//const numbers = document.querySelectorAll('.number');
-const result = document.querySelector('#result');
-const button = document.querySelector('#button');
+    const result = document.querySelector('#result');
+    const resultMin = document.querySelector('#resultMin');
+    const resultMax = document.querySelector('#resultMax');
+
+    const buttonAdd = document.querySelector('#buttonAdd');
+    const buttonRem = document.querySelector('#buttonRem');
+    const inputs = document.querySelector('#inputs');
+
+    let updateNumber = () => {
+        console.log("there's input");
+
+        let tempResult = 0;
+        let numbersArr = [...numbers];
 
 
-button.addEventListener('click' , () =>{
+        for (let i in numbersArr) {
+            if (numbersArr.hasOwnProperty(i)) {
 
-    const numbers = document.querySelectorAll('.number').values; //get values from the inputs in a array/whatever
-    const tempResult = 0;
+                console.log(parseInt(numbersArr[i].value));
+                if (isNaN(parseInt(numbersArr[i].value)) == false) {
+                    tempResult += parseInt(numbersArr[i].value);
+                }
+            }
+        }
 
-    for( const i of numbers) {
-        tempResult =+ parseInt(i);
+        let numbersArrValue = numbersArr.map(item => parseInt(item.value))
+                                        .filter(value => !isNaN(value));
+
+        console.log(numbersArrValue);
+
+        let x = Math.min(...numbersArrValue);
+        let y = Math.max(...numbersArrValue);
+
+
+        result.innerHTML = 'Suma: ' + tempResult;
+        resultMin.innerHTML = 'Minimalna wartosc: ' + x;
+        resultMax.innerHTML = 'Maksymalna wartosc: ' + y;
+
     }
 
-     
-
-    result.innerHTML = 'Suma: ' + tempResult;
-
-})
 
 
+    let assignEventsForNumbers = () => {
+        numbers.forEach(number => {
+            number.addEventListener('input', () => updateNumber())
+        });
+    }
 
+    let numbers = document.querySelectorAll('.number'); //get values from the inputs in a NodeListOf???
+    assignEventsForNumbers();
 
+    buttonAdd.addEventListener('click', () => {
+        let textbox = document.createElement('input');
 
-//console.dir
-//querySelector
-//querySelectorAll
+        textbox.type = 'text';
+        textbox.className = 'number';
+        inputs.appendChild(textbox);
+
+        numbers = document.querySelectorAll('.number');
+        assignEventsForNumbers();
+    });
+
+    buttonRem.addEventListener('click', () => {
+        let numbersArr = [...numbers];
+        let tmp = numbersArr[(numbersArr.length - 1)];
+        tmp.parentNode.removeChild(tmp);
+
+        numbers = document.querySelectorAll('.number');
+        assignEventsForNumbers();
+        updateNumber();
+
+    });
+
 </script>
