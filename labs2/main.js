@@ -1,4 +1,5 @@
 // notatnik z zajęć
+/*
 
 const main = document.querySelector('main')
 
@@ -30,21 +31,21 @@ let button4 = document.querySelector('#button4');
 
 button1.addEventListener('click', () => {
     slides.style.animation = 'none';
-    slides.offsetHeight; /* trigger reflow */
+    slides.offsetHeight; /* trigger reflow 
     slides.style.animation = null; 
     slides.style.animationPlayState = "paused";
 });
 
 button2.addEventListener('click', () => {
     slides.style.animation = 'none';
-    slides.offsetHeight; /* trigger reflow */
+    slides.offsetHeight; /* trigger reflow 
     slides.style.animation = null; 
     delay(1);
     
 
     slides.style.animationPlayState = "paused";
 });
-
+*/
 // kasujemy setInterval
 // clearInterval(intervalRef)
 
