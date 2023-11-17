@@ -52,10 +52,6 @@ function playSound(sound) {
 
 document.addEventListener('keypress', onKeyPress)
 
-// When timer == the value => play the sound
-
-// When recording is ON, turn the value of button to
-// STOP, and SAVE INTO ARRAY which key was pressed and when.
 
 // zrobic tablice z channelami, zeby mozna ich miec ile sie chce
 // a potem jak ktos walnie rekord to tworze w tej tablicy
@@ -89,8 +85,6 @@ playButton.addEventListener('click', () => {
 
         playingChannel = playingChannel.reverse();
 
-        // można odwrócic tablice, i popować od końca, żeby nie sprawdzało
-        // początkowych ale bedzie. 
         console.log(playingChannel);
         console.log(playingChannel.length);
 
@@ -100,7 +94,6 @@ playButton.addEventListener('click', () => {
     else{
         playing = false;
     }
-    //while(playingChannel[playingChannel.length - 1].timestamp > sec)
 });
 
 
@@ -162,15 +155,15 @@ changeChannel.addEventListener('click', () => {
     }
 });
 
-
-
+//
+// When timer == the value => play the sound
+//
 
 (function timer() {
 
     timer = setInterval(() => {
         ele.innerHTML = '00:' + sec;
         sec++;
-        //console.log(playingChannel.length)
         if (playingChannel.length > 0 && playing == true) {
             console.log("przeszło")
             console.log(playingChannel[playingChannel.length - 1].timestamp)
