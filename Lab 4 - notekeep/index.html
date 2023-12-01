@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .note {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+        }
+
+        .pinned {
+            background-color: #ffffcc;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Notes App</h1>
+    <div>
+        <label for="title">Title:</label>
+        <input type="text" id="title" placeholder="Enter note title">
+    </div>
+    <div>
+        <label for="content">Content:</label>
+        <textarea id="content" placeholder="Enter note content"></textarea>
+    </div>
+    <div>
+        <label for="color">Color:</label>
+        <input type="color" id="color" value="#ffffff">
+    </div>
+    <div>
+        <label for="pin">Pin:</label>
+        <input type="checkbox" id="pin">
+    </div>
+    <button onclick="createNote()">Create Note</button>
+
+    <div id="notes-container"></div>
+
+    <script>
+        // Function to create a new note
+        function createNote() {
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const color = document.getElementById('color').value;
+            const pin = document.getElementById('pin').checked;
+            const creationDate = new Date().toLocaleString();
+
+            const note = {
+                title,
+                content,
+                color,
+                pin,
+                creationDate,
+            };
+
+            // Get existing notes from localStorage
+            const existingNotes = JSON.parse(localStorage.getItem('notes')) || [];
+
+            // Add the new note to the array
+            existingNotes.push(note);
+
+            // Save the updated array back to localStorage
+            localStorage.setItem('notes', JSON.stringify(existingNotes));
+
+            // Display notes
+            displayNotes();
+        }
+
+        // Function to display notes
+        function displayNotes() {
+            const notesContainer = document.getElementById('notes-container');
+            notesContainer.innerHTML = '';
+
+            // Get notes from localStorage
+            const notes = JSON.parse(localStorage.getItem('notes')) || [];
+
+            // add sorting list to get pinned notes on top///////////////
+
+            // Loop through notes and display them
+
+
+
+            notes.forEach((note, index) => {
+                if (note.pin) {
+                    const noteDiv = document.createElement('div');
+                    noteDiv.classList.add('note');
+                    noteDiv.style.backgroundColor = note.color;
+                    if (note.pin) {
+                        //noteDiv.classList.add('pinned');
+                    }
+
+                    noteDiv.innerHTML = `
+                    <strong>${note.title}</strong><br>
+                    ${note.content}<br>
+                    This note is pinned! <br>
+                    Created on: ${note.creationDate}<br>
+                    <button onclick="deleteNote(${index})">Delete</button>
+                `;
+
+                    notesContainer.appendChild(noteDiv);
+                }                    
+
+            });
+
+            notes.forEach((note, index) => {
+                if (!note.pin) {
+                    const noteDiv = document.createElement('div');
+                    noteDiv.classList.add('note');
+                    noteDiv.style.backgroundColor = note.color;
+                    if (note.pin) {
+                        //noteDiv.classList.add('pinned');
+                    }
+
+                    noteDiv.innerHTML = `
+                    <strong>${note.title}</strong><br>
+                    ${note.content}<br>
+                    Created on: ${note.creationDate}<br>
+                    <button onclick="deleteNote(${index})">Delete</button>
+                `;
+
+                    notesContainer.appendChild(noteDiv);
+                }                    
+
+            });
+
+        }
+
+
+
+
+
+
+
+
+        // Function to delete a note
+        function deleteNote(index) {
+            // Get existing notes from localStorage
+            const existingNotes = JSON.parse(localStorage.getItem('notes')) || [];
+
+            // Remove the note at the specified index
+            existingNotes.splice(index, 1);
+
+            // Save the updated array back to localStorage
+            localStorage.setItem('notes', JSON.stringify(existingNotes));
+
+            // Display notes
+            displayNotes();
+        }
+
+        // Initial display of notes
+        displayNotes();
+    </script>
+</body>
+
+</html>
