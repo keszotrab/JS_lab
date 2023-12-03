@@ -1,3 +1,84 @@
+const slider = document.querySelector('.slider');
+const sliderControlsContainer = document.querySelector('.slider-controls');
+const sliderControls = ['previous', 'next'];
+const slides = document.querySelectorAll('.slide');
+
+class Carousel {
+
+    constructor(container, items, controls){
+        this.carouselControls = controls;
+        this.carouselContainer = container;
+        this.carouselArray = [...items];
+    }
+
+    updateGallery(){
+        this.carouselArray.forEach(element => {
+            element.classList.remove('slide-1');
+            element.classList.remove('slide-2');
+            element.classList.remove('slide-3');
+            element.classList.remove('slide-4');
+            element.classList.remove('slide-5');
+        });
+
+        this.carouselArray.slice(0, 5).forEach((element, i) => {
+            element.classList.add(`slide-${i+1}`);
+        });
+
+    }
+
+    //get put last element as first & put first element as last 
+    setCurrentState(direction){
+        if (direction.className == 'slider-controls-previous'){
+            this.carouselArray.unshift(this.carouselArray.pop());
+        }else{
+            this.carouselArray.push(this.carouselArray.shift());
+        }
+        this.updateGallery(); 
+    }
+
+    setControls() {
+        this.carouselControls.forEach(control => {
+            sliderControlsContainer.appendChild(document.createElement('button')).className = `slider-controls-${control}`;
+            document.querySelector(`.slider-controls-${control}`).innerText = control;
+        });
+    }
+
+    useControls(){
+        const triggers = [...sliderControlsContainer.childNodes];
+        triggers.forEach(control => {
+            control.addEventListener('click', e => {
+                e.preventDefault(); //don't really understand
+                this.setCurrentState(control);
+            });
+        });
+    }
+
+}
+
+const exampleCarousel = new Carousel(sliderControlsContainer, slides, sliderControls);
+
+exampleCarousel.setControls();
+exampleCarousel.useControls();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // notatnik z zajęć
 /*
 
