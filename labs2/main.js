@@ -2,6 +2,8 @@ const slider = document.querySelector('.slider');
 const sliderControlsContainer = document.querySelector('.slider-controls');
 const sliderControls = ['previous', 'next'];
 const slides = document.querySelectorAll('.slide');
+let funnyInterval = setInterval(() => exampleCarousel.setCurrentState("a"), 7000);
+
 
 class Carousel {
 
@@ -34,6 +36,9 @@ class Carousel {
             this.carouselArray.push(this.carouselArray.shift());
         }
         this.updateGallery(); 
+        clearInterval(funnyInterval);
+        let funnyInterval = setInterval(() => exampleCarousel.setCurrentState("a"), 7000);
+
     }
 
     setControls() {
@@ -59,9 +64,8 @@ const exampleCarousel = new Carousel(sliderControlsContainer, slides, sliderCont
 
 exampleCarousel.setControls();
 exampleCarousel.useControls();
-
-
-
+exampleCarousel.setCurrentState("a");
+//setTimeout(() => exampleCarousel.setCurrentState("a"), 4000);
 
 
 
