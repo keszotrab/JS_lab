@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #LeaderBoard {
+      height: 20vh;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    #LeaderBoardTitle {
+      width: 100%;
+      text-align: center;
+    }
+
+    canvas {
+      display: block;
+      border-color: black;
+      border-width: 1px;
+    }
+
+    .TopScore {
+      font-size: 20px;
+
+    }
+
+    #Top1 {
+      color: rgb(238, 25, 25);
+    }
+
+    #Top2 {
+      color: rgb(51, 255, 0);
+    }
+
+    #Top3 {
+      color: rgb(2, 133, 255);
+    }
+
+
+    #UsernameBox {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      position: fixed;
+      text-align: center;
+      width: 80%;
+      z-index: 1000;
+      top: 60%;
+      left: 10%;
+    }
+
+    #Timer {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #f0f0f0;
+      padding: 10px;
+      border-top: 1px solid #ccc;
+      width: 100%;
+      text-align: center;
+    }
+  </style>
+  <title>Tilt Ball Game</title>
+</head>
+
+<body>
+  <div id="LeaderBoard">
+    <div id="LeaderBoardTitle" for="Game">Leaderboard</div>
+    <div id="Top1" class="TopScore">1.</div>
+    <div id="Top2" class="TopScore">2.</div>
+    <div id="Top3" class="TopScore">3.</div>
+    <div id="Top4" class="TopScore">4.</div>
+    <div id="Top5" class="TopScore">5.</div>
+
+  </div>
+  <canvas id="gameCanvas"></canvas>
+  <div id="controlls"></div>
+
+
+  <div id="UsernameBox">
+    <p>Input your username</p>
+    <input id="Username" type="text" placeholder="Enter text"></br>
+    <button id="StartButton" onclick="StartGame()">Start Game</button>
+  </div>
+
+  <div id="Timer">0</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script>
+    let canvas, ctx;
+    let ball, hole;
+    let isGameOver = false;
+    let tiltX = 0;
+    let tiltY = 0;
+    let timer;
+    let username;
+    let time;
+    const usernameBox = document.getElementById('UsernameBox');
+    let existingRecords;
+    const top1 = document.getElementById('Top1');
+    const top2 = document.getElementById('Top2');
+    const top3 = document.getElementById('Top3');
+    const top4 = document.getElementById('Top4');
+    const top5 = document.getElementById('Top5');
+    const timerElement = document.getElementById('Timer');
+    let currentTime = 0;
+    let gameLoopActive = false;
+
+
+
+    // Initialize the game
+    function init() {
+      canvas = document.getElementById('gameCanvas');
+      ctx = canvas.getContext('2d');
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight * 0.8;
+
+      ball = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        radius: 15,
+        color: '#3498db',
+        speed: 2
+      };
+
+      hole = {
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: 20,
+        color: '#2ecc71'
+      };
+
+      // Add event listener for device orientation
+      window.addEventListener('deviceorientation', handleOrientation);
+
+      // Start the game loop
+      if (!gameLoopActive) {
+        gameLoopActive = true;
+        gameLoop();
+      }
+    }
+
+    //Starts the game
+    function StartGame() {
+      username = document.getElementById('Username').value;
+      usernameBox.style.display = "none";
+      isGameOver = false;
+      currentTime = 0;
+      init();
+
+    }
+
+
+
+//Adds new records to localstorage
+    function AddNewRecord() {
+      time = currentTime;
+
+      let record = {
+        username,
+        time,
+      };
+
+      console.log(time);
+      existingRecords = JSON.parse(localStorage.getItem('records')) || [];
+      existingRecords.push(record);
+
+      localStorage.setItem('records', JSON.stringify(existingRecords));
+      updateLeaderboard();
+    }
+//updates leaderboard with data from localstorage
+    function updateLeaderboard() {
+      existingRecords = JSON.parse(localStorage.getItem('records')) || [];
+      existingRecords.sort((a, b) => b.time - a.time);
+
+      tmpRecord = existingRecords.pop() || [];
+      top1.innerText = `1. ` + (tmpRecord.username || `brak`) + (`      Time: ` + tmpRecord.time || `brak`)
+      tmpRecord = existingRecords.pop() || [];;
+      top2.innerText = `2. ` + (tmpRecord.username || `brak`) + (`      Time: ` + tmpRecord.time || `brak`)
+      tmpRecord = existingRecords.pop() || [];;
+      top3.innerText = `3. ` + (tmpRecord.username || `brak`) + (`      Time: ` + tmpRecord.time || `brak`)
+      tmpRecord = existingRecords.pop() || [];;
+      top4.innerText = `4. ` + (tmpRecord.username || `brak`) + (`      Time: ` + tmpRecord.time || `brak`)
+      tmpRecord = existingRecords.pop() || [];;
+      top5.innerText = `5. ` + (tmpRecord.username || `brak`) + (`      Time: ` + tmpRecord.time || `brak`)
+
+    }
+
+
+    // Update the game logic
+    function update() {
+      if (!isGameOver) {
+        // Update ball position based on device tilt
+        ball.x += tiltX * ball.speed;
+        ball.y += tiltY * ball.speed;
+
+        if (ball.x - ball.radius < 0) {
+          ball.x = ball.radius;
+        }
+        if (ball.x + ball.radius > canvas.width) {
+          ball.x = canvas.width - ball.radius;
+        }
+        if (ball.y - ball.radius < 0) {
+          ball.y = ball.radius;
+        }
+        if (ball.y + ball.radius > canvas.height) {
+          ball.y = canvas.height - ball.radius;
+        }
+
+        if (isBallInHole()) {
+          isGameOver = true;
+          AddNewRecord(username, time);
+          usernameBox.style.display = "block";
+          alert('Congratulations! You win!');
+        }
+      }
+    }
+
+    // Draw the game elements
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.beginPath();
+      ctx.arc(hole.x, hole.y, hole.radius, 0, Math.PI * 2);
+      ctx.fillStyle = hole.color;
+      ctx.fill();
+      ctx.closePath();
+
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+      ctx.fillStyle = ball.color;
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    // Main game loop
+    function gameLoop() {
+      update();
+      draw();
+      console.log('benc');
+
+      requestAnimationFrame(gameLoop);
+    }
+
+
+
+    // Handle device orientation events
+    function handleOrientation(event) {
+      tiltX = event.gamma / 90; // Normalize gamma values to [-1, 1]
+      tiltY = event.beta / 90;  // Normalize beta values to [-1, 1]
+    }
+
+    function isBallInHole() {
+      const distance = Math.sqrt((ball.x - hole.x) ** 2 + (ball.y - hole.y) ** 2);
+      return distance < ball.radius + hole.radius;
+    }
+
+
+    function updateTimer() {
+      currentTime++;
+      timerElement.innerText = currentTime + ' seconds';
+    }
+
+    setInterval(updateTimer, 100);
+
+    // Initialize the leaderboard when the page is loaded
+    window.addEventListener('load', updateLeaderboard);
+  </script>
+</body>
+
+</html>
