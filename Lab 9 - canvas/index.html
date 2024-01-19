@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        let balls = [];
+        const numBalls = 10;
+        const minDistance = 150;
+        let isPaused = false;
+
+        function setup() {
+            createCanvas(800, 600);
+            for (let i = 0; i < numBalls; i++) {
+                balls.push(new Ball(random(width), random(height))); 
+            }
+
+            //let startButton = createButton('Start');
+            //startButton.position(10, height + 10);                                Zamiast tego przycisku dodać możliwośc zapisywania patternu jaki jest ułożony
+            //startButton.mousePressed(startBalls);                                 np. przycisk który
+
+            let pauseButton = createButton('Pause/Resume');
+            pauseButton.position(90, height + 10);
+            pauseButton.mousePressed(togglePause);
+
+            let resetButton = createButton('Reset');
+            resetButton.position(200, height + 10);
+            resetButton.mousePressed(resetBalls);
+
+
+
+        }
+
+        function draw() {
+            background(255);
+
+            for (let i = 0; i < balls.length; i++) {
+                balls[i].display();
+            }
+
+            for (let i = 0; i < balls.length; i++) {
+                if (!isPaused) {
+                    balls[i].move();
+                }
+                for (let j = i + 1; j < balls.length; j++) {
+                    let d = dist(balls[i].x, balls[i].y, balls[j].x, balls[j].y);
+                    if (d < minDistance) {
+                        stroke(0);
+                        line(balls[i].x, balls[i].y, balls[j].x, balls[j].y);
+                    }
+                }
+            }
+
+        }
+
+        function startBalls() {
+            for (let i = 0; i < balls.length; i++) {
+                balls[i].start();
+            }
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+        }
+
+        function resetBalls() {
+            for (let i = 0; i < balls.length; i++) {
+                balls[i].reset();
+            }
+        }
+
+        class Ball {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.diameter = 30;
+                this.xSpeed = random(2, 4) * (random() > 0.5 ? 1 : -1);
+                this.ySpeed = random(2, 4) * (random() > 0.5 ? 1 : -1);
+            }
+
+            move() {
+                this.x += this.xSpeed;
+                this.y += this.ySpeed;
+
+                if (this.x < 0 || this.x > width) {
+                    this.xSpeed *= -1;
+                }
+
+                if (this.y < 0 || this.y > height) {
+                    this.ySpeed *= -1;
+                }
+            }
+
+            display() {
+                fill(0);
+                ellipse(this.x, this.y, this.diameter, this.diameter);
+            }
+
+            start() {
+                this.xSpeed = random(2, 4) * (random() > 0.5 ? 1 : -1);
+                this.ySpeed = random(2, 4) * (random() > 0.5 ? 1 : -1);
+            }
+
+            reset() {
+                this.x = random(width);
+                this.y = random(height);
+                this.start();
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -67,12 +67,10 @@ playButton.addEventListener('click', () => {
         if (channelNumber.innerHTML == 1) {
             console.log(channel_1);
             playingChannel = [].concat(channel_1);
-
         }
         if (channelNumber.innerHTML == 2) {
             console.log(channel_1);
             playingChannel = [].concat(channel_2);
-
         }
         if (channelNumber.innerHTML == 3) {
             console.log(channel_1);

@@ -96,23 +96,6 @@
   <div id="Timer">0</div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   <script>
     let canvas, ctx;
     let ball, hole;
@@ -196,10 +179,16 @@
       localStorage.setItem('records', JSON.stringify(existingRecords));
       updateLeaderboard();
     }
+
+
 //updates leaderboard with data from localstorage
     function updateLeaderboard() {
       existingRecords = JSON.parse(localStorage.getItem('records')) || [];
       existingRecords.sort((a, b) => b.time - a.time);
+
+
+      //Możnaby to zamienić na fora który pokolei kodem 
+      //tworzy divy, nadajem im ID, itd. ale szkoda chyba na to czasu
 
       tmpRecord = existingRecords.pop() || [];
       top1.innerText = `1. ` + (tmpRecord.username || `brak`) + (`      Time: ` + tmpRecord.time || `brak`)
@@ -218,7 +207,6 @@
     // Update the game logic
     function update() {
       if (!isGameOver) {
-        // Update ball position based on device tilt
         ball.x += tiltX * ball.speed;
         ball.y += tiltY * ball.speed;
 
@@ -272,10 +260,9 @@
 
 
 
-    // Handle device orientation events
     function handleOrientation(event) {
-      tiltX = event.gamma / 90; // Normalize gamma values to [-1, 1]
-      tiltY = event.beta / 90;  // Normalize beta values to [-1, 1]
+      tiltX = event.gamma / 90;
+      tiltY = event.beta / 90; 
     }
 
     function isBallInHole() {
