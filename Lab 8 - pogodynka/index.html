@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+
+</head>
+
+<body>
+    <div id="container">
+        <form class="weatherForm">
+            <input type="text" class="cityInput" id="cityInput" placeholder="Enter city ..." />
+            <button type="submit">Submit</button>
+        </form>
+
+
+        <div class="card" style="display: none;">
+            <h1 class="cityDisplay">City</h1>
+            <p class="tempDisplay">15°C</p>
+            <p class="humidityDisplay">humidity 12%</p>
+            <p class="descDisplay">Clear skies</p>
+            <p class="weatherEmoji">☀</p>
+            <p class="errorDisplay">Please enter the city</p>
+
+        </div>
+    </div>
+
+
+
+
+
+    <script>
+        const weatherForm = document.querySelector(".weatherForm");
+        const cityInput = document.querySelector(".cityInput")
+        const card = document.querySelector(".card")
+        const apiKey = "32129325897d8e511badeac6da1ce490"
+
+        weatherForm.addEventListener("submit", async event => {
+
+            event.preventDefault();
+
+            const city = cityInput.value;
+            console.log(city);
+
+            if (city) {
+                try {
+                    const weatherData = await getWheatherData(city);
+                    displayWheatherInfo(weatherData)
+                }
+                catch (e) {
+                    console.error(e);
+                    displayWheatherError(e)
+                }
+
+            } else {
+
+                displayWheatherError("no city");
+            }
+        })
+
+        async function getWheatherData(city) {
+
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+
+            const response = await fetch(apiUrl);
+
+            if (!response.ok) {
+                throw new Error("could not fetch weather data");
+            }
+
+            return response.json();
+        }
+
+        function displayWheatherInfo(data) {
+            const {
+                name: city,
+                main: { temp, humidity },
+                weather: [{ description, id }] } = data;
+
+            card.textContent = "";
+            card.style.display = "flex";
+
+            const cityDisplay = document.createElement("h1")
+            const tempDisplay = document.createElement("p")
+            const humidityDisplay = document.createElement("p")
+            const descDisplay = document.createElement("p")
+            const weatherEmoji = document.createElement("p")
+
+            cityDisplay.textContent = city;
+            tempDisplay.textContent = `${(temp - 273.15).toFixed(1)}°C`;
+            humidityDisplay.textContent = `Humidity: ${humidity}%`;
+            descDisplay.textContent = description;
+            weatherEmoji.textContent = getWheatherEmoji(id)
+
+            cityDisplay.classList.add("cityDisplay");
+            tempDisplay.classList.add("tempDisplay");
+            humidityDisplay.classList.add("humidityDisplay");
+            descDisplay.classList.add("descDisplay");
+            weatherEmoji.classList.add("weatherEmoji");
+
+            card.appendChild(cityDisplay)
+            card.appendChild(tempDisplay)
+            card.appendChild(humidityDisplay)
+            card.appendChild(descDisplay)
+            card.appendChild(weatherEmoji)
+
+        }
+
+
+        function getWheatherEmoji(wheatherId) {
+            console.log(wheatherId)
+            switch (true) {
+                case (wheatherId >= 200 && wheatherId < 300):
+                    return "⛈";
+                case (wheatherId >= 300 && wheatherId < 400):
+                    return "🌦";
+                case (wheatherId >= 500 && wheatherId < 600):
+                    return "🌧";
+                case (wheatherId >= 600 && wheatherId < 700):
+                    return "🌨";
+                case (wheatherId >= 700 && wheatherId < 800):
+                    return "🌫";
+                case (wheatherId == 800):
+                    return "☀";
+                case (wheatherId >= 801 && wheatherId < 810):
+                    return "☁";
+                default:
+                    return "❓";
+            }
+        }
+
+        function displayWheatherError(message) {
+            const errorDisplay = document.createElement("p")
+            errorDisplay.textContent = message;
+            errorDisplay.classList.add("errorDisplay")
+
+            card.textContent = "";
+            card.style.display = "flex";
+            card.appendChild(errorDisplay);
+        }
+
+
+
+    </script>
+</body>
+
+</html>
