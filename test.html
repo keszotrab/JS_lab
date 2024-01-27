@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Value on Button Press</title>
+</head>
+<body>
+
+<div>
+    <h1>Destroy it Isildur!</h1>
+    <div>
+        <h1>LOL No *WALKS AWAY*</h1>
+        <button onclick="getValue(this)">Get Value</button>
+    </div>
+    <div>
+        <h1> Chad Isildur</h1>
+        <button onclick="getValue(this)">Get Value</button>
+    </div>
+</div>
+
+<script>
+    function getValue(button) {
+        // Get the value of the <h1> inside the same <div>
+        var cityName = button.parentNode.querySelector('h1').textContent;
+
+        // Log or use the value as needed
+        console.log('City Name:', cityName);
+    }
+</script>
+
+</body>
+</html>
